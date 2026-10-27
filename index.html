@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="theme-color" content="#ffffff">
+<meta name="robots" content="noindex,nofollow">
+<title>Atendimento | TudoNoBolso</title>
+<style>
+:root{font-family:Arial,Helvetica,sans-serif;color:#262626;background:#fff}
+*{box-sizing:border-box}
+body{margin:0;min-height:100svh;display:flex;flex-direction:column}
+.notice{background:#4bc433;text-align:center;padding:12px 20px;font-size:13px;color:#102b0b}
+header{width:min(1160px,90%);margin:0 auto;padding:32px 0}
+.logo{display:block;width:min(290px,75vw);height:auto}
+main{flex:1;display:grid;place-items:center;text-align:center;padding:45px 20px 95px}
+.hero{max-width:680px}
+h1{font-size:clamp(33px,5vw,56px);font-weight:500;line-height:1.13;letter-spacing:-.035em;margin:0 0 24px}
+p{font-size:clamp(18px,2.1vw,24px);color:#555;line-height:1.5;margin:0 0 34px}
+button{background:#4bc433;border:0;border-radius:100px;color:#13250f;font-size:17px;font-weight:700;padding:18px 39px;min-height:58px;cursor:pointer}
+button:hover{background:#3fba2b}
+button:focus-visible{outline:3px solid #222;outline-offset:3px}
+#status{min-height:22px;margin-top:17px;font-size:13px;color:#666}
+footer{text-align:center;font-size:12px;color:#777;padding:20px}
+@media(max-width:640px){header{padding:25px 0} main{padding-bottom:115px} .notice{font-size:12px}}
+</style>
+</head>
+<body>
+<div class="notice">Atenção: não pedimos pagamento antecipado para aprovação de empréstimo.</div>
+<header><img class="logo" src="./logo.png" alt="TudoNoBolso" width="2048" height="605"></header>
+<main><section class="hero" aria-label="Atendimento virtual">
+<h1>Como podemos ajudar?</h1>
+<p>Fale com nosso assistente virtual e encontre a solução que precisa.<br><br>Caso o chat não inicie automaticamente, clique no botão abaixo.</p>
+<button id="open-chat" type="button">Iniciar atendimento</button>
+<div id="status" role="status" aria-live="polite"></div>
+</section></main>
+<footer>TudoNoBolso · Central de Atendimento</footer>
+<script>
+(function(){
+  'use strict';
+  var button=document.getElementById('open-chat');
+  var status=document.getElementById('status');
+  var ready=false;
+  var opened=false;
+  function openChat(){
+    if(typeof window.zE!=='function'){
+      status.textContent='O atendimento ainda está carregando. Tente novamente em instantes.';
+      return;
+    }
+    try{
+      window.zE('messenger','open');
+      opened=true;
+      status.textContent='';
+    }catch(err){
+      status.textContent='Não foi possível abrir o chat. Tente novamente.';
+    }
+  }
+  button.addEventListener('click',openChat);
+  // Zendesk Messaging: evento de inicialização; o botão permanece como alternativa.
+  function registerReady(){
+    if(typeof window.zE!=='function') return;
+    try{
+      window.zE('messenger:on','ready',function(){ready=true;if(!opened)openChat();});
+      // Também tenta pela API de prontidão, quando presente.
+      window.zE(function(){if(!opened)openChat();});
+    }catch(err){ /* mantém o botão manual disponível */ }
+  }
+  window.addEventListener('load',registerReady);
+  window.tnbZendeskReady=registerReady;
+})();
+</script>
+<script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=109a889d-d2ff-46a4-bc3a-1c3087eb8eaa" onload="window.tnbZendeskReady && window.tnbZendeskReady()" async></script>
+</body>
+</html>
